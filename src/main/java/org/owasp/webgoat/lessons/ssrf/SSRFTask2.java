@@ -31,7 +31,7 @@ public class SSRFTask2 implements AssignmentEndpoint {
   }
 
   protected AttackResult furBall(String url) {
-    if (url.matches("http://ifconfig\\.pro")) {
+    if (isValidUrl(url)) {
       String html;
       try (InputStream in = new URL(url).openStream()) {
         html =
@@ -49,6 +49,15 @@ public class SSRFTask2 implements AssignmentEndpoint {
     }
     var html = "<img class=\"image\" alt=\"image post\" src=\"images/cat.jpg\">";
     return getFailedResult(html);
+  }
+
+  private boolean isValidUrl(String url) {
+    try {
+      URL u = new URL(url);
+      return "http".equals(u.getProtocol()) && "ifconfig.pro".equals(u.getHost());
+    } catch (MalformedURLException e) {
+      return false;
+    }
   }
 
   private AttackResult getFailedResult(String errorMsg) {
