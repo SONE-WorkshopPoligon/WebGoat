@@ -54,8 +54,12 @@ public class SSRFTask2 implements AssignmentEndpoint {
   private boolean isValidUrl(String url) {
     try {
       URL u = new URL(url);
-      return "http".equals(u.getProtocol()) && "ifconfig.pro".equals(u.getHost());
-    } catch (MalformedURLException e) {
+      String host = u.getHost();
+      // Resolve the host to its canonical form to prevent DNS rebinding or IP-based bypasses
+      String resolvedHost = java.net.InetAddress.getByName(host).getHostName();
+      // Check against a whitelist of allowed hosts
+      return "ifconfig.pro".equals(resolvedHost) && "http".equals(u.getProtocol());
+    } catch (Exception e) {
       return false;
     }
   }
